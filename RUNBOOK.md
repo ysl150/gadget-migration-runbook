@@ -219,6 +219,56 @@ Shopify hasn't published a final date for switching off REST for existing apps. 
 4. Give the flows fixed exit IPs and add them to the public app's allowlist. Run the Dev Dashboard traffic test before you enforce it.
 5. Point inbound Shopify webhooks at an endpoint that answers within 5 seconds and passes the work on to MuleSoft through a queue, not inline.
 
+## Gating data at the edge: rate limits and certified testing
+
+In November 2026 one newly installed router took down US air traffic control. Reuters reported the following ([Nov 17, 2026](https://srnnews.com/us-senators-urge-faa-to-pause-new-router-deployment-pending-testing/)):
+- A Juniper router that L3Harris installed at an FAA radio site in El Dorado, Arkansas, sent about 1,000 connection attempts every four to five seconds.
+- The data overload hit 17 of the FAA's 22 en route centers, disrupting radio and radar feeds.
+- It led to a nearly five-hour nationwide ground stop and more than 18,000 cancelled flights.
+- The network stabilized once the suspect sites were blocked and the routers' broadcast function was turned off.
+- Thirteen senators then asked the FAA to pause further deployments until it has **independent validation, verified failover and rollback procedures**.
+
+An app migration has the same failure mode on a smaller scale. One source (a store, an IoT device, a router, a partner flow) sends far more than it should, and with no gate at the edge it reaches every system behind it. During the migration that wrote this runbook, one free-plan store sent a product update every few seconds, to two addresses at once. That's the same shape of problem.
+
+### Gate every source at the edge
+
+| Control | What it does | Where |
+|---|---|---|
+| **Per-source rate limit** | Caps requests per store, device or partner key, so one source can't flood the rest | Cloudflare Workers rate-limiting binding, keyed by source |
+| **Quarantine list** | Cuts off one source without a deploy, and undoes just as fast | A Worker variable or KV list checked before any work |
+| **No fan-out by default** | A source can't broadcast to everything; each destination is explicit | Routing table in the Worker; broadcast off unless approved |
+| **Device identity** | Routers and IoT devices prove who they are before sending data | mTLS client certificates, or signed requests (HMAC) |
+| **Shopify exception** | Shopify counts a rejected webhook as a failure, so gate webhooks by **answering 200 and dropping**, not with 429 | Webhook route |
+
+```js
+// wrangler.jsonc: "ratelimits": [{ "name": "PER_SOURCE", "namespace_id": "1001", "simple": { "limit": 60, "period": 60 } }]
+export default {
+  async fetch(request, env) {
+    const source = request.headers.get("x-shopify-shop-domain")   // a store
+      || request.headers.get("x-device-id")                       // a router or IoT device (after mTLS)
+      || "unknown";
+    const quarantined = (env.QUARANTINE || "").split(/[\s,]+/).includes(source);
+    const { success } = await env.PER_SOURCE.limit({ key: source });
+    if (quarantined || !success) {
+      // Shopify webhooks: acknowledge and drop, or Shopify records a failed delivery.
+      if (request.headers.has("x-shopify-topic")) return new Response(null, { status: 200 });
+      return new Response("rate limited", { status: 429, headers: { "retry-after": "60" } });
+    }
+    return fetch(request); // on to the app
+  },
+};
+```
+
+### Certify before you roll out
+
+Run every new device, app version or integration through the steps the senators asked of the FAA:
+
+1. **Independent validation:** test on a development store or a lab device, by someone other than the person who built it. Include an overload test: send 10 times normal traffic and confirm the gate holds.
+2. **Canary first:** one store or one site, watched for a set period, before the next cohort. The FAA rollout had about 400 of 3,648 routers installed when it was stopped.
+3. **Verified failover:** prove the old path still works while the new one runs, and switch between them on purpose at least once before cutover.
+4. **Rollback procedure:** written, timed and rehearsed. For a Shopify app that's `shopify app deploy` of the previous version plus the previous URLs. For a device, it's the quarantine list.
+5. **Record the evidence:** test results, who ran them and when, kept with the release, so "is it ready?" has a factual answer.
+
 ## After cutover: what to watch
 
 | Signal | Meaning |
@@ -228,6 +278,7 @@ Shopify hasn't published a final date for switching off REST for existing apps. 
 | 403 "IP restrictions" | Something still calls the Admin API from outside your allowlisted network |
 | The same event twice | A stale shop-scoped subscription at the old address |
 | Missing records | Re-run a bulk read for that store |
+| One source far above its usual rate | Quarantine it at the edge first, then investigate |
 
 ## Checklist
 
@@ -243,6 +294,8 @@ Shopify hasn't published a final date for switching off REST for existing apps. 
 - [ ] IP allowlist set and tested; compliance webhooks live and inline
 - [ ] Final `--since` delta exported and loaded; Gadget writes paused, then app retired before March 31, 2027
 - [ ] MuleSoft / REST flows listed, moved to GraphQL, given a token owner and fixed exit IPs
+- [ ] Per-source rate limit and quarantine list at the edge; overload test passed
+- [ ] Certified rollout: independent validation, canary, failover switched once, rollback rehearsed, evidence recorded
 - [ ] Export files and the Gadget API key deleted
 
 ## A live app on this stack
