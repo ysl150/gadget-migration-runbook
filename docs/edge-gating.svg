@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="990" viewBox="0 0 1200 990" role="img" aria-labelledby="title desc">
+  <title id="title">Edge gating: one source should never reach everything</title>
+  <desc id="desc">Stores, routers or IoT devices, and partner flows pass through an edge gate with four steps: identity, quarantine list, per-source rate limit and explicit routing. Passing traffic goes on to the app. Blocked Shopify webhooks get 200 and are dropped; blocked devices and partners get 429 with Retry-After. Below, five steps to certify before rollout: independent validation, canary first, failover switched once, rollback rehearsed, evidence recorded.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#000000"/>
+    </marker>
+    <marker id="arrow-pink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f22468"/>
+    </marker>
+  </defs>
+  <rect id="background" width="1200" height="990" fill="#ffffff"/>
+
+  <g id="header">
+    <text x="60" y="70" font-family="Arial, Helvetica, sans-serif" font-size="18" letter-spacing="2" fill="#f22468">EDGE GATING · RATE LIMITS · CERTIFIED TESTING</text>
+    <text x="60" y="128" font-family="'Times New Roman', Times, serif" font-size="46" fill="#000000">One source should never reach everything</text>
+    <text x="60" y="166" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#555555">Every store, router, IoT device and partner flow passes the same four checks before it touches your systems.</text>
+    <line x1="60" y1="200" x2="1140" y2="200" stroke="#000000" stroke-width="1"/>
+  </g>
+
+  <g id="sources" font-family="Arial, Helvetica, sans-serif">
+    <text x="60" y="235" font-size="15" letter-spacing="2" fill="#555555">SOURCES</text>
+    <g id="source-store">
+      <rect x="60" y="250" width="240" height="96" rx="8" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+      <text x="80" y="290" font-size="19" fill="#000000">Shopify store</text>
+      <text x="80" y="318" font-size="15" fill="#555555">webhooks, signed by HMAC</text>
+    </g>
+    <g id="source-device">
+      <rect x="60" y="370" width="240" height="96" rx="8" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+      <text x="80" y="410" font-size="19" fill="#000000">Router or IoT device</text>
+      <text x="80" y="438" font-size="15" fill="#555555">mTLS client certificate</text>
+    </g>
+    <g id="source-partner">
+      <rect x="60" y="490" width="240" height="96" rx="8" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+      <text x="80" y="530" font-size="19" fill="#000000">Partner flow</text>
+      <text x="80" y="558" font-size="15" fill="#555555">MuleSoft, ERP, API key</text>
+    </g>
+    <line x1="300" y1="298" x2="374" y2="298" stroke="#000000" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <line x1="300" y1="418" x2="374" y2="418" stroke="#000000" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <line x1="300" y1="538" x2="374" y2="538" stroke="#000000" stroke-width="1.5" marker-end="url(#arrow)"/>
+  </g>
+
+  <g id="gate" font-family="Arial, Helvetica, sans-serif">
+    <text x="380" y="235" font-size="15" letter-spacing="2" fill="#555555">THE EDGE GATE</text>
+    <rect x="380" y="250" width="440" height="336" rx="10" fill="#ffffff" stroke="#f22468" stroke-width="2"/>
+    <text x="405" y="285" font-family="'Times New Roman', Times, serif" font-size="24" fill="#000000">Cloudflare Worker, in front of everything</text>
+    <g id="step-identity">
+      <circle cx="420" cy="325" r="15" fill="#f22468"/>
+      <text x="420" y="331" font-size="16" fill="#ffffff" text-anchor="middle">1</text>
+      <text x="450" y="322" font-size="19" fill="#000000">Identity</text>
+      <text x="450" y="344" font-size="15" fill="#555555">mTLS certificate or HMAC signature, or no entry</text>
+    </g>
+    <g id="step-quarantine">
+      <circle cx="420" cy="391" r="15" fill="#f22468"/>
+      <text x="420" y="397" font-size="16" fill="#ffffff" text-anchor="middle">2</text>
+      <text x="450" y="388" font-size="19" fill="#000000">Quarantine list</text>
+      <text x="450" y="410" font-size="15" fill="#555555">cut off one source in seconds, no deploy</text>
+    </g>
+    <g id="step-rate-limit">
+      <circle cx="420" cy="457" r="15" fill="#f22468"/>
+      <text x="420" y="463" font-size="16" fill="#ffffff" text-anchor="middle">3</text>
+      <text x="450" y="454" font-size="19" fill="#000000">Per-source rate limit</text>
+      <text x="450" y="476" font-size="15" fill="#555555">a cap per store, device or partner key</text>
+    </g>
+    <g id="step-routing">
+      <circle cx="420" cy="523" r="15" fill="#f22468"/>
+      <text x="420" y="529" font-size="16" fill="#ffffff" text-anchor="middle">4</text>
+      <text x="450" y="520" font-size="19" fill="#000000">Explicit routing</text>
+      <text x="450" y="542" font-size="15" fill="#555555">no broadcast by default; each destination named</text>
+    </g>
+  </g>
+
+  <g id="pass" font-family="Arial, Helvetica, sans-serif">
+    <line x1="820" y1="418" x2="894" y2="418" stroke="#000000" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <text x="857" y="406" font-size="14" fill="#555555" text-anchor="middle">passes</text>
+    <rect x="900" y="370" width="240" height="96" rx="8" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="920" y="410" font-size="19" fill="#000000">Your app</text>
+    <text x="920" y="438" font-size="15" fill="#555555">and system of record</text>
+  </g>
+
+  <g id="blocked" font-family="Arial, Helvetica, sans-serif">
+    <line x1="600" y1="586" x2="600" y2="618" stroke="#f22468" stroke-width="1.5" marker-end="url(#arrow-pink)"/>
+    <text x="612" y="608" font-size="14" fill="#f22468">blocked</text>
+    <g id="blocked-webhook">
+      <rect x="380" y="624" width="215" height="92" rx="8" fill="#ffffff" stroke="#f22468" stroke-width="1"/>
+      <text x="398" y="652" font-size="16" fill="#000000">Shopify webhook</text>
+      <text x="398" y="678" font-size="18" fill="#f22468">200, dropped</text>
+      <text x="398" y="702" font-size="13" fill="#555555">a 429 counts as a failure</text>
+    </g>
+    <g id="blocked-device">
+      <rect x="605" y="624" width="215" height="92" rx="8" fill="#ffffff" stroke="#f22468" stroke-width="1"/>
+      <text x="623" y="652" font-size="16" fill="#000000">Device or partner</text>
+      <text x="623" y="678" font-size="18" fill="#f22468">429 + Retry-After</text>
+      <text x="623" y="702" font-size="13" fill="#555555">it backs off and retries</text>
+    </g>
+  </g>
+
+  <g id="certify" font-family="Arial, Helvetica, sans-serif">
+    <line x1="60" y1="752" x2="1140" y2="752" stroke="#000000" stroke-width="1"/>
+    <text x="60" y="787" font-size="15" letter-spacing="2" fill="#555555">CERTIFY BEFORE ROLLOUT</text>
+    <line x1="60" y1="808" x2="1140" y2="808" stroke="#d9d9d9" stroke-width="2"/>
+    <g id="certify-validation">
+      <text x="60" y="845" font-family="'Times New Roman', Times, serif" font-size="28" fill="#f22468">1</text>
+      <text x="84" y="842" font-size="17" fill="#000000">Independent validation</text>
+      <text x="84" y="866" font-size="14" fill="#555555">someone else tests it;</text>
+      <text x="84" y="886" font-size="14" fill="#555555">10× overload test</text>
+    </g>
+    <g id="certify-canary">
+      <text x="282" y="845" font-family="'Times New Roman', Times, serif" font-size="28" fill="#f22468">2</text>
+      <text x="306" y="842" font-size="17" fill="#000000">Canary first</text>
+      <text x="306" y="866" font-size="14" fill="#555555">one store or site,</text>
+      <text x="306" y="886" font-size="14" fill="#555555">watched, then the next</text>
+    </g>
+    <g id="certify-failover">
+      <text x="504" y="845" font-family="'Times New Roman', Times, serif" font-size="28" fill="#f22468">3</text>
+      <text x="528" y="842" font-size="17" fill="#000000">Failover switched once</text>
+      <text x="528" y="866" font-size="14" fill="#555555">old path proven to work</text>
+      <text x="528" y="886" font-size="14" fill="#555555">before cutover</text>
+    </g>
+    <g id="certify-rollback">
+      <text x="726" y="845" font-family="'Times New Roman', Times, serif" font-size="28" fill="#f22468">4</text>
+      <text x="750" y="842" font-size="17" fill="#000000">Rollback rehearsed</text>
+      <text x="750" y="866" font-size="14" fill="#555555">written, timed,</text>
+      <text x="750" y="886" font-size="14" fill="#555555">practiced</text>
+    </g>
+    <g id="certify-evidence">
+      <text x="948" y="845" font-family="'Times New Roman', Times, serif" font-size="28" fill="#f22468">5</text>
+      <text x="972" y="842" font-size="17" fill="#000000">Evidence recorded</text>
+      <text x="972" y="866" font-size="14" fill="#555555">results, who ran them,</text>
+      <text x="972" y="886" font-size="14" fill="#555555">kept with the release</text>
+    </g>
+  </g>
+
+  <g id="footer" font-family="Arial, Helvetica, sans-serif">
+    <line x1="60" y1="916" x2="1140" y2="916" stroke="#d9d9d9" stroke-width="1"/>
+    <text x="60" y="944" font-size="14" fill="#555555">Case: Nov 2026 FAA ground stop. One newly installed router sent about 1,000 connection attempts every 4–5 seconds and overloaded 17 of 22 en route centers (Reuters).</text>
+    <text x="60" y="970" font-size="14" fill="#000000">YSL150 LLC · <tspan fill="#f22468">files.ysl150.com/runbooks/gadget-migration</tspan></text>
+  </g>
+</svg>

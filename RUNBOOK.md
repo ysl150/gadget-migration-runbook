@@ -232,6 +232,10 @@ An app migration has the same failure mode on a smaller scale. One source (a sto
 
 ### Gate every source at the edge
 
+![Edge gating: sources pass identity, quarantine, per-source rate limit and explicit routing before reaching the app; blocked Shopify webhooks get 200 and are dropped, blocked devices get 429; then five steps to certify before rollout](https://files.ysl150.com/runbooks/gadget-migration/edge-gating.svg)
+
+[Download the diagram (SVG)](https://files.ysl150.com/runbooks/gadget-migration/edge-gating.svg) · source in [`docs/edge-gating.svg`](docs/edge-gating.svg)
+
 | Control | What it does | Where |
 |---|---|---|
 | **Per-source rate limit** | Caps requests per store, device or partner key, so one source can't flood the rest | Cloudflare Workers rate-limiting binding, keyed by source |
