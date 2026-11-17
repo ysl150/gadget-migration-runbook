@@ -37,6 +37,32 @@ The hardware isn't the root cause. Neither is the vendor. Each of these migratio
 
 The rate limits, certificates and certification records below exist to make step 3 enforceable. On their own, they don't make two shapes agree.
 
+## Before AI: scope the data, then crawl, walk, run
+
+AI makes the two-shapes problem worse, not better. A model fed unreconciled data answers confidently from whichever shape it saw last. Introduce AI only after the data it will touch is scoped, vetted and reconciled, and give it more reach one stage at a time.
+
+### Scope first: requirements before any AI process
+
+| Requirement | Question to answer in writing |
+|---|---|
+| **Data inventory** | Which tables, fields and sources would the AI read or write? Is each one already in the reconciled system of record? |
+| **Classification** | Which fields are personal data, payment data, or commercially sensitive? Which may never reach a model at all? |
+| **Purpose and consent** | For what purpose is personal data processed, and does the consent or legal basis on record cover AI use for that purpose? |
+| **Minimization** | What is the least the model needs to see? Use IDs and aggregates instead of raw records wherever possible. |
+| **Secrets** | Are keys and tokens kept out of prompts, logs and model context? The model calls tools, and the tools hold the credentials. |
+| **Success and failure** | What does a correct answer look like? Is there an evaluation set drawn from reconciled data, and what error rate is acceptable? |
+| **Ownership** | Who approves changes, reviews errors, and can switch it off? |
+
+### Crawl, walk, run
+
+| Stage | What the AI may do | Gate to the next stage |
+|---|---|---|
+| **Crawl** | Nothing yet. Scope, inventory, contracts, reconciliation. Humans run the process by hand and record the decisions they make. | Data reconciled and clean for the agreed period; requirements table answered and signed off |
+| **Walk** | Read-only and advisory. It suggests, drafts and flags discrepancies, and a person approves every action. Every prompt, answer and decision is logged. | Measured accuracy on the evaluation set; reviewer agreement over an agreed run of cases; no data outside scope seen in the logs |
+| **Run** | It acts within limits: a scoped, short-lived credential; a rate limit per agent like any other machine; writes that go through the same queue and contract checks as everything else; a kill switch and a rehearsed rollback. | Ongoing: monthly review of errors, limits and scope. Any incident sends it back to Walk. |
+
+Treat an AI agent as one more machine in the [rate limits and mTLS rules](#rate-limits-per-router-and-machine-in-the-mtls-rules-analysis-to-deploy) and the [data dependency map](#data-dependency-map), with its own identity, its own limit and its own row.
+
 ## The clocks
 
 | Date | What happens | Track |
@@ -272,6 +298,7 @@ Once the data is in a system of record you own, every funnel reads from the same
 
 - [ ] Clocks that apply to you listed, with owners and target dates ahead of each
 - [ ] **Two shapes reconciled:** old and new contracts written; every field mapped with an owner; contract checks at the gate; parallel run with a discrepancy log, clean for the agreed period before cutover
+- [ ] **Before AI:** data inventory, classification, purpose and consent, minimization, secrets out of prompts, evaluation set and owners answered in writing; Crawl → Walk → Run gates met, with logging, per-agent limits and a kill switch
 - [ ] **Track A:** delisting reason confirmed in writing; tokens, allowlist, GraphQL and GDPR webhooks fixed; stale webhooks swept; App Store or custom-app path decided
 - [ ] **Track B:** devices inventoried with identity; per-device rate limits and alerts; broadcast off; quarantine list tested; certified rollout evidence kept
 - [ ] **Machines:** ECC certificates (P-256) from a CA you can replace, fleet re-issue tested, inventory and expiry alerts, revocation tested; per-router and per-machine rate limits in the mTLS rules (log only → canary → fleet); legacy circuits gated at the converter; certification record per machine type and unit; data dependency map with a rate limit and owner on every arrow
