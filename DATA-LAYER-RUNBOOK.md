@@ -4,7 +4,7 @@ Delisted apps, critical networks, and SAP ECC to API: three migrations with one 
 
 *YSL150 LLC · Apache-2.0 · last updated 2026-11-17*
 
-Illustrations: [Delisted, or next in line?](https://files.ysl150.com/delisted-apps-data-layer.svg) · [Edge gating steps](https://files.ysl150.com/runbooks/gadget-migration/edge-gating.svg)
+Illustrations: [Four failures, one boundary](https://files.ysl150.com/runbooks/data-layer/four-failures.svg) · [Delisted, or next in line?](https://files.ysl150.com/delisted-apps-data-layer.svg) · [Edge gating steps](https://files.ysl150.com/runbooks/gadget-migration/edge-gating.svg)
 
 ## Why these belong together
 
@@ -15,6 +15,35 @@ A delisted Shopify app, a router flooding an air traffic network, and an ERP rea
 3. **System of record:** Xano or Postgres, every record keyed by a stable ID.
 4. **Data layer:** server-side events and catalog, with consent attached.
 5. **Conversion funnels:** Google Merchant and Ads, GA4, Meta, Amazon.
+
+## Four failures, one boundary
+
+Four failures in 2026 look unrelated. Each is an **admission-control failure at a boundary**: a gate that relied on an assumption about the other side, and the assumption stopped being true.
+
+| # | Failure | What happened | Gate | Wrong assumption |
+|---|---|---|---|---|
+| 1 | **eMudhra certificate authority** | Private keys of eight CAs under eMudhra were shown to be weak. Chrome removed the emSign ECC Root CA – G3 effective Oct 27, 2026, and its device CA had been revoked in June. Every mTLS handshake chaining to it lost its trust. ([Inc42](https://inc42.com/features/emudhra-has-quit-tls-the-accountability-questions-havent/), [Mozilla](https://bugzilla.mozilla.org/show_bug.cgi?id=2018979)) | **Identity:** who are you? | The CA stays trustworthy |
+| 2 | **Shopify short tokens** | Offline tokens last one hour. Offline and bulk jobs that read a token once fail partway through. Public apps that don't comply are delisted Jan 1, 2027; old tokens get 403 from Apr 1. Custom apps are outside the rule. ([Shopify](https://shopify.dev/changelog/expiring-offline-access-tokens-required-for-all-public-apps-as-of-january-1-2027)) | **Credential:** for how long? | A token lasts forever |
+| 3 | **Microsoft 365 health-check cascade** (Nov 12–13, 2026) | Servers failing automated health checks were taken out of service, overloading the remaining servers. Microsoft hasn't published a root cause yet. ([Control Plane](https://controlplane.com/blog/post/microsoft-365-outage-november-2026-cause)) | **Health:** can you serve? | Removing a server reduces load |
+| 4 | **FAA router flood** (Nov 2026) | A newly installed router sent about 1,000 connection attempts every four to five seconds. The overload hit 17 of 22 en route centers **that were using old routers**. ([Reuters](https://srnnews.com/us-senators-urge-faa-to-pause-new-router-deployment-pending-testing/)) The new hardware isn't the issue. Machines decades old, with too little memory and bandwidth, couldn't absorb that rate, and nothing throttled it at the boundary. | **Capacity:** how much? | Every sender behaves like the old ones |
+
+**They fail the same way: a retry storm.** A failing gate creates more traffic at the same gate:
+- a failed handshake reconnects in a loop;
+- an expired token retries the job;
+- a removed server's load moves to its neighbours, which then fail their own checks;
+- a flood of connection attempts exhausts old machines.
+
+Underneath all four is the [two-shapes problem](#the-common-failure-two-shapes-of-data-never-reconciled): new-shape behavior meeting old-shape limits, never vetted or reconciled.
+
+### The controls, gate by gate
+
+| Control | What it enforces | Gates |
+|---|---|---|
+| **Cloudflare WAF and CPU protection** | WAF rules require a verified client certificate before anything else. Rate-limiting rules cap each source. Workers CPU limits stop one request from burning compute. The edge absorbs connection floods, so old machines behind it never see them. | Capacity, Identity, Health |
+| **Xano background tasks** | Bulk, sync and reconciliation jobs run off the request path, with one lock per store. The token is refreshed per page, not per job. Retries back off with jitter, and overdue items are flagged. | Credential, Health |
+| **AI binding runner rules** | Every AI agent or binding is one more machine. It gets its own identity, a per-agent rate limit, a CPU cap, an allow-list of tools, no secrets in its context, and a kill switch. [Crawl, walk, run](#before-ai-scope-the-data-then-crawl-walk-run) decides how much it may do. | All four |
+| **Token payload + condition function** (restricted data tools) | The token carries shop, purpose, consent, allowed tables and expiry. A condition function (in Xano, a precondition) checks those claims before any data tool runs, and denies by default. | Credential, Identity |
+| **Health-gating rules** | A cap on how many servers can be out at once. Several consecutive failures before removal. Slow readmission with ramped load. Jittered resets. Health checks that don't depend on shared services. | Health |
 
 ## The common failure: two shapes of data, never reconciled
 
@@ -296,6 +325,7 @@ Once the data is in a system of record you own, every funnel reads from the same
 
 ## Checklist
 
+- [ ] **Four gates covered:** identity (your own replaceable CA), credential (short-lived scoped tokens, refreshed per page), health (capped removals, slow readmission, jitter), capacity (per-source edge limits, CPU limits); every gate checked for retry storms
 - [ ] Clocks that apply to you listed, with owners and target dates ahead of each
 - [ ] **Two shapes reconciled:** old and new contracts written; every field mapped with an owner; contract checks at the gate; parallel run with a discrepancy log, clean for the agreed period before cutover
 - [ ] **Before AI:** data inventory, classification, purpose and consent, minimization, secrets out of prompts, evaluation set and owners answered in writing; Crawl → Walk → Run gates met, with logging, per-agent limits and a kill switch
@@ -321,6 +351,7 @@ Once the data is in a system of record you own, every funnel reads from the same
 - [Inc42: eMudhra has quit TLS (Oct 31, 2026)](https://inc42.com/features/emudhra-has-quit-tls-the-accountability-questions-havent/)
 - [FAA: AC 20-115D, airborne software (DO-178C)](https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_20-115D.pdf)
 - [FAA: AC 20-152A, airborne electronic hardware (DO-254)](https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_20-152A.pdf)
+- [Control Plane: what caused the Microsoft 365 outage of November 12, 2026](https://controlplane.com/blog/post/microsoft-365-outage-november-2026-cause)
 - [Cloudflare: client certificates (mTLS)](https://developers.cloudflare.com/ssl/client-certificates/) · [bring your own CA](https://developers.cloudflare.com/ssl/client-certificates/byo-ca/) · [Workers rate limiting](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/) · [Request `cf.tlsClientAuth`](https://developers.cloudflare.com/workers/runtime-apis/request/) · [IP ranges](https://www.cloudflare.com/ips/)
 - [Google: Merchant API](https://developers.google.com/merchant/api) · [server-side tagging](https://developers.google.com/tag-platform/tag-manager/server-side) · [GA4 Measurement Protocol](https://developers.google.com/analytics/devguides/collection/protocol/ga4) · [consent mode](https://developers.google.com/tag-platform/security/guides/consent)
 - [Meta: Conversions API](https://developers.facebook.com/docs/marketing-api/conversions-api/) · [deduplication](https://developers.facebook.com/docs/marketing-api/conversions-api/deduplicate-pixel-and-server-events/)

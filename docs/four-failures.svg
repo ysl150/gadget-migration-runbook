@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1010" viewBox="0 0 1200 1010" role="img" aria-labelledby="title desc">
+  <title id="title">Four failures, one boundary</title>
+  <desc id="desc">Four 2026 failures mapped to the boundary gate each one broke and the control for it. eMudhra CA distrust broke the identity gate; control: Cloudflare WAF with your own replaceable CA. Shopify one-hour tokens broke the credential gate; control: Xano background tasks and scoped tokens checked by a condition function. The Microsoft 365 health-check cascade broke the health gate; control: health-gating rules. The FAA router flood broke the capacity gate on old low-memory machines; control: Cloudflare rate and CPU limits at the edge. All four fail as a retry storm, and AI agents are one more machine at all four gates.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#000000"/>
+    </marker>
+  </defs>
+  <rect id="background" width="1200" height="1010" fill="#ffffff"/>
+
+  <g id="header">
+    <text x="60" y="70" font-family="Arial, Helvetica, sans-serif" font-size="18" letter-spacing="2" fill="#f22468">FOUR FAILURES · ONE BOUNDARY</text>
+    <text x="60" y="128" font-family="'Times New Roman', Times, serif" font-size="44" fill="#000000">Every gate assumed something about the other side</text>
+    <text x="60" y="166" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#555555">Identity, credential, health and capacity: four gates, four wrong assumptions, one cascade.</text>
+    <line x1="60" y1="200" x2="1140" y2="200" stroke="#000000" stroke-width="1"/>
+  </g>
+
+  <g id="column-labels" font-family="Arial, Helvetica, sans-serif" font-size="14" letter-spacing="2" fill="#555555">
+    <text x="60" y="238">THE FAILURE</text>
+    <text x="440" y="238">THE GATE · WRONG ASSUMPTION</text>
+    <text x="800" y="238">THE CONTROL</text>
+  </g>
+
+  <g id="row-identity" font-family="Arial, Helvetica, sans-serif">
+    <rect x="60" y="256" width="340" height="112" rx="8" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="80" y="290" font-size="19" fill="#000000">eMudhra CA</text>
+    <text x="80" y="316" font-size="15" fill="#555555">ECC root distrusted, Oct 2026</text>
+    <text x="80" y="340" font-size="15" fill="#555555">mTLS trust anchored to one root</text>
+    <line x1="400" y1="312" x2="434" y2="312" stroke="#000000" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="440" y="256" width="320" height="112" rx="8" fill="#ffffff" stroke="#f22468" stroke-width="2"/>
+    <circle cx="470" cy="290" r="14" fill="#f22468"/>
+    <text x="470" y="296" font-size="15" fill="#ffffff" text-anchor="middle">1</text>
+    <text x="494" y="296" font-size="19" fill="#000000">Identity: who are you?</text>
+    <text x="460" y="330" font-size="14" fill="#555555">Assumed:</text>
+    <text x="460" y="350" font-size="14" fill="#f22468">the CA stays trustworthy</text>
+    <line x1="760" y1="312" x2="794" y2="312" stroke="#000000" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="800" y="256" width="340" height="112" rx="8" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="820" y="290" font-size="19" fill="#000000">Cloudflare WAF + your own CA</text>
+    <text x="820" y="316" font-size="15" fill="#555555">verified client certificate first</text>
+    <text x="820" y="340" font-size="15" fill="#555555">a CA you can replace in days</text>
+  </g>
+
+  <g id="row-credential" font-family="Arial, Helvetica, sans-serif">
+    <rect x="60" y="396" width="340" height="112" rx="8" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="80" y="430" font-size="19" fill="#000000">Shopify short tokens</text>
+    <text x="80" y="456" font-size="15" fill="#555555">1-hour tokens; delisted Jan 1, 2027</text>
+    <text x="80" y="480" font-size="15" fill="#555555">bulk jobs read a token once</text>
+    <line x1="400" y1="452" x2="434" y2="452" stroke="#000000" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="440" y="396" width="320" height="112" rx="8" fill="#ffffff" stroke="#f22468" stroke-width="2"/>
+    <circle cx="470" cy="430" r="14" fill="#f22468"/>
+    <text x="470" y="436" font-size="15" fill="#ffffff" text-anchor="middle">2</text>
+    <text x="494" y="436" font-size="19" fill="#000000">Credential: for how long?</text>
+    <text x="460" y="470" font-size="14" fill="#555555">Assumed:</text>
+    <text x="460" y="490" font-size="14" fill="#f22468">a token lasts forever</text>
+    <line x1="760" y1="452" x2="794" y2="452" stroke="#000000" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="800" y="396" width="340" height="112" rx="8" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="820" y="430" font-size="19" fill="#000000">Xano tasks + scoped tokens</text>
+    <text x="820" y="456" font-size="15" fill="#555555">refresh per page, not per job</text>
+    <text x="820" y="480" font-size="15" fill="#555555">claims checked before any data tool</text>
+  </g>
+
+  <g id="row-health" font-family="Arial, Helvetica, sans-serif">
+    <rect x="60" y="536" width="340" height="112" rx="8" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="80" y="570" font-size="19" fill="#000000">Microsoft 365 health checks</text>
+    <text x="80" y="596" font-size="15" fill="#555555">Nov 12–13, 2026 cascade</text>
+    <text x="80" y="620" font-size="15" fill="#555555">removed servers shifted their load</text>
+    <line x1="400" y1="592" x2="434" y2="592" stroke="#000000" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="440" y="536" width="320" height="112" rx="8" fill="#ffffff" stroke="#f22468" stroke-width="2"/>
+    <circle cx="470" cy="570" r="14" fill="#f22468"/>
+    <text x="470" y="576" font-size="15" fill="#ffffff" text-anchor="middle">3</text>
+    <text x="494" y="576" font-size="19" fill="#000000">Health: can you serve?</text>
+    <text x="460" y="610" font-size="14" fill="#555555">Assumed:</text>
+    <text x="460" y="630" font-size="14" fill="#f22468">removing a server reduces load</text>
+    <line x1="760" y1="592" x2="794" y2="592" stroke="#000000" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="800" y="536" width="340" height="112" rx="8" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="820" y="570" font-size="19" fill="#000000">Health-gating rules</text>
+    <text x="820" y="596" font-size="15" fill="#555555">cap removals; several fails to remove</text>
+    <text x="820" y="620" font-size="15" fill="#555555">slow readmission; jittered resets</text>
+  </g>
+
+  <g id="row-capacity" font-family="Arial, Helvetica, sans-serif">
+    <rect x="60" y="676" width="340" height="112" rx="8" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="80" y="710" font-size="19" fill="#000000">FAA router flood</text>
+    <text x="80" y="736" font-size="15" fill="#555555">~1,000 attempts every 4–5 seconds</text>
+    <text x="80" y="760" font-size="15" fill="#555555">old low-RAM machines overwhelmed</text>
+    <line x1="400" y1="732" x2="434" y2="732" stroke="#000000" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="440" y="676" width="320" height="112" rx="8" fill="#ffffff" stroke="#f22468" stroke-width="2"/>
+    <circle cx="470" cy="710" r="14" fill="#f22468"/>
+    <text x="470" y="716" font-size="15" fill="#ffffff" text-anchor="middle">4</text>
+    <text x="494" y="716" font-size="19" fill="#000000">Capacity: how much?</text>
+    <text x="460" y="750" font-size="14" fill="#555555">Assumed:</text>
+    <text x="460" y="770" font-size="14" fill="#f22468">every sender acts like the old ones</text>
+    <line x1="760" y1="732" x2="794" y2="732" stroke="#000000" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="800" y="676" width="340" height="112" rx="8" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <text x="820" y="710" font-size="19" fill="#000000">Cloudflare rate + CPU limits</text>
+    <text x="820" y="736" font-size="15" fill="#555555">throttle at the edge, per source</text>
+    <text x="820" y="760" font-size="15" fill="#555555">old machines never see the flood</text>
+  </g>
+
+  <g id="cascade" font-family="Arial, Helvetica, sans-serif">
+    <line x1="60" y1="820" x2="1140" y2="820" stroke="#000000" stroke-width="1"/>
+    <text x="60" y="856" font-size="14" letter-spacing="2" fill="#555555">THE SAME CASCADE</text>
+    <text x="60" y="890" font-family="'Times New Roman', Times, serif" font-size="25" fill="#000000">A failing gate creates more traffic at the same gate: reconnects, retries, shifted load, floods.</text>
+    <text x="60" y="922" font-size="16" fill="#000000">AI binding runner rules: every agent is one more machine at all four gates, with its own identity, token, limit and kill switch.</text>
+  </g>
+
+  <g id="footer" font-family="Arial, Helvetica, sans-serif">
+    <line x1="60" y1="948" x2="1140" y2="948" stroke="#d9d9d9" stroke-width="1"/>
+    <text x="60" y="978" font-size="14" fill="#555555">Root cause underneath: two shapes of data, never reconciled. Microsoft and FAA root causes not yet officially published.</text>
+    <text x="1140" y="978" font-size="14" fill="#000000" text-anchor="end">YSL150 LLC · <tspan fill="#f22468">files.ysl150.com/runbooks/data-layer</tspan></text>
+  </g>
+</svg>
