@@ -222,13 +222,13 @@ Shopify hasn't published a final date for switching off REST for existing apps. 
 ## Gating data at the edge: rate limits and certified testing
 
 In November 2026 one newly installed router took down US air traffic control. Reuters reported the following ([Nov 17, 2026](https://srnnews.com/us-senators-urge-faa-to-pause-new-router-deployment-pending-testing/)):
-- A Juniper router that L3Harris installed at an FAA radio site in El Dorado, Arkansas, sent about 1,000 connection attempts every four to five seconds.
+- A newly installed router at an FAA radio site in El Dorado, Arkansas, sent about 1,000 connection attempts every four to five seconds. The cause was still under investigation.
 - The data overload hit 17 of the FAA's 22 en route centers, disrupting radio and radar feeds.
 - It led to a nearly five-hour nationwide ground stop and more than 18,000 cancelled flights.
 - The network stabilized once the suspect sites were blocked and the routers' broadcast function was turned off.
 - Thirteen senators then asked the FAA to pause further deployments until it has **independent validation, verified failover and rollback procedures**.
 
-An app migration has the same failure mode on a smaller scale. One source (a store, an IoT device, a router, a partner flow) sends far more than it should, and with no gate at the edge it reaches every system behind it. During the migration that wrote this runbook, one free-plan store sent a product update every few seconds, to two addresses at once. That's the same shape of problem.
+The lesson isn't about one vendor's hardware. The new network's traffic reached systems built for the old network's data, and nobody had vetted that the two matched. See [two shapes of data, never reconciled](https://files.ysl150.com/runbooks/data-layer/#the-common-failure-two-shapes-of-data-never-reconciled). An app migration has the same failure mode on a smaller scale. One source (a store, an IoT device, a router, a partner flow) sends far more than it should, and with no gate at the edge it reaches every system behind it. During the migration that wrote this runbook, one free-plan store sent a product update every few seconds, to two addresses at once. That's the same shape of problem.
 
 ### Gate every source at the edge
 
