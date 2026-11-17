@@ -35,9 +35,9 @@ Four failures in 2026 look unrelated. Each is an **admission-control failure at 
 
 Underneath all four is the [two-shapes problem](#the-common-failure-two-shapes-of-data-never-reconciled): new-shape behavior meeting old-shape limits, never vetted or reconciled.
 
-### The controls, gate by gate
+### The controls and solutions, gate by gate
 
-| Control | What it enforces | Gates |
+| Control / solution | What it enforces | Gates |
 |---|---|---|
 | **Cloudflare WAF and CPU protection** | WAF rules require a verified client certificate before anything else. Rate-limiting rules cap each source. Workers CPU limits stop one request from burning compute. The edge absorbs connection floods, so old machines behind it never see them. | Capacity, Identity, Health |
 | **Xano background tasks** | Bulk, sync and reconciliation jobs run off the request path, with one lock per store. The token is refreshed per page, not per job. Retries back off with jitter, and overdue items are flagged. | Credential, Health |
