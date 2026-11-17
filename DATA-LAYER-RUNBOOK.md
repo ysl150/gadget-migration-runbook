@@ -35,6 +35,17 @@ Four failures in 2026 look unrelated. Each is an **admission-control failure at 
 
 Underneath all four is the [two-shapes problem](#the-common-failure-two-shapes-of-data-never-reconciled): new-shape behavior meeting old-shape limits, never vetted or reconciled.
 
+### Testing and deployment, not the vendor
+
+Calls to ban or replace the new routers are unnecessary. Reuters reported they were Juniper devices installed by L3Harris, and that senators asked to pause deployment pending further testing. A different vendor's router, rolled out the same way, would meet the same old receivers. **The fault is in testing and deployment.** These checks would have caught it before any center went down:
+
+1. **Test against the oldest receiver in the path,** not just the new device in a lab. Load the new router while it talks to the slowest, lowest-memory machine it will reach.
+2. **Baseline receiver capacity:** how many connections and messages per second each old machine can absorb before it fails. That number sets the throttle.
+3. **Verify the shipped configuration,** not the intended one: broadcast off, connection retry and backoff settings, and a configuration hash that matches the certified record.
+4. **Throttle at the boundary before rollout,** so no single device can exceed what the old receivers can take, whatever its make.
+5. **Canary one site and watch downstream,** at the receiving centers as well as the device. Only then move to the next cohort.
+6. **Rehearse the rollback:** block or quarantine the site, and restore the previous path within minutes.
+
 ### The controls and solutions, gate by gate
 
 | Control / solution | What it enforces | Gates |
