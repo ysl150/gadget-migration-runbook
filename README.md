@@ -1,0 +1,16 @@
+# Gadget migration runbook
+
+Move a Shopify app off Gadget, which shuts down on March 31, 2027, and onto Cloudflare with a database you control. The move also covers Shopify's January 1, 2027 deadline for expiring offline tokens, and moving REST and MuleSoft (Salesforce) flows to GraphQL.
+
+- **[RUNBOOK.md](RUNBOOK.md)**: the full runbook (inventory, export, dual run, Shopify cutover, decommission)
+- **[scripts/gadget/export.mjs](scripts/gadget/export.mjs)**: exports every record through your app's generated Gadget client (NDJSON + manifest)
+- **[scripts/gadget/load-postgres.mjs](scripts/gadget/load-postgres.mjs)**: loads the export into `gadget_import_*` staging tables in Postgres
+
+Read online: https://files.ysl150.com/runbooks/gadget-migration/
+
+```sh
+npm install
+npm test
+```
+
+Apache-2.0 · YSL150 LLC · ysl@ysl150.com

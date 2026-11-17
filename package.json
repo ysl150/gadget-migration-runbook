@@ -1,0 +1,11 @@
+{
+  "name": "gadget-migration-runbook",
+  "version": "1.0.0",
+  "description": "Move a Shopify app off Gadget before March 31, 2027, onto Cloudflare and a database you control.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "private": true,
+  "engines": { "node": ">=20" },
+  "scripts": { "test": "node --test test/*.test.js" },
+  "dependencies": { "postgres": "3.4.7" }
+}
