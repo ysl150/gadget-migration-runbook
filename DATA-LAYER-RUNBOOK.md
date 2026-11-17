@@ -4,7 +4,7 @@ Delisted apps, critical networks, and SAP ECC to API: three migrations with one 
 
 *YSL150 LLC · Apache-2.0 · last updated 2026-11-17*
 
-Illustrations: [Four failures, one boundary](https://files.ysl150.com/runbooks/data-layer/four-failures.svg) ([PNG](https://files.ysl150.com/runbooks/data-layer/four-failures.png)) · [Delisted, or next in line?](https://files.ysl150.com/delisted-apps-data-layer.svg) · [Edge gating steps](https://files.ysl150.com/runbooks/gadget-migration/edge-gating.svg)
+Illustrations: [Four failures, one boundary](https://files.ysl150.com/runbooks/data-layer/four-failures.svg) ([PNG](https://files.ysl150.com/runbooks/data-layer/four-failures.png)) · [Delisted, or next in line?](https://files.ysl150.com/delisted-apps-data-layer.svg) · [Edge gating steps](https://files.ysl150.com/runbooks/gadget-migration/edge-gating.svg) ([PNG](https://files.ysl150.com/runbooks/gadget-migration/edge-gating.png))
 
 ## Why these belong together
 

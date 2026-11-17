@@ -234,7 +234,7 @@ The lesson isn't about one vendor's hardware, and calls to ban or replace the ne
 
 ![Edge gating: sources pass identity, quarantine, per-source rate limit and explicit routing before reaching the app; blocked Shopify webhooks get 200 and are dropped, blocked devices get 429; then five steps to certify before rollout](https://files.ysl150.com/runbooks/gadget-migration/edge-gating.svg)
 
-[Download the diagram (SVG)](https://files.ysl150.com/runbooks/gadget-migration/edge-gating.svg) · source in [`docs/edge-gating.svg`](docs/edge-gating.svg)
+[Download the diagram (SVG)](https://files.ysl150.com/runbooks/gadget-migration/edge-gating.svg) · [PNG](https://files.ysl150.com/runbooks/gadget-migration/edge-gating.png) · source in [`docs/edge-gating.svg`](docs/edge-gating.svg)
 
 | Control | What it does | Where |
 |---|---|---|
